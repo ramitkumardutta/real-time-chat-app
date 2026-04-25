@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.local
+.env.development
+.env.production
+logs/
+*.log
+dist/
+build/
+coverage/
+.DS_Store
+package-lock.json
+package.json
+eslint.config.js
+vite.svg
+react.svg
