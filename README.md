@@ -105,6 +105,8 @@ npm run dev
 | POST | `/api/auth/register` | Register a new user |
 | POST | `/api/auth/login` | Login and receive JWT |
 | POST | `/api/auth/logout` | Logout user |
+| POST | `/api/auth/verify-email` | Verify an email exists before allowing password reset |
+| POST | `/api/auth/reset-password` | Reset password (server hashes new password) |
 
 ### Messages
 | Method | Endpoint | Description |
@@ -128,6 +130,25 @@ npm run dev
 | `getOnlineUsers` | Server → Client | Broadcast online user list |
 
 ---
+
+## Password Reset (Forgot Password) Flow
+
+- **Purpose:** Allow users who forgot their password to verify their email and set a new password without logging in.
+
+- **Frontend behavior (`frontened/src/pages/Forget_PasswordPage.jsx`):**
+	- User enters their email and clicks **Verify Email**.
+	- The app POSTs to `/api/auth/verify-email`. If the email exists the UI shows a success message and reveals a new-password input (previously hidden).
+	- User enters a new password and clicks **Change Password**. The app POSTs to `/api/auth/reset-password` with `{ email, password }`.
+	- On success the UI shows a confirmation (currently a popup) and redirects the user to the login page.
+
+- **Backend behavior (`backend/src/controllers/auth.controller.js`):**
+	- `verifyEmail` checks the database for the provided email and returns 200 when found, 404 when not.
+	- `resetPassword` hashes the new password with bcrypt and overwrites the user's password in the database. On success it returns a 200 with a confirmation message.
+
+- **Security & UX notes:**
+	- Passwords are hashed server-side (bcrypt) before saving — raw passwords are never stored.
+	- This implementation does not send emails or generate time-limited reset tokens; it assumes a simple verify-by-email flow. For production consider adding a secure, token-based reset link emailed to the user.
+
 
 ## Key Design Decisions
 
