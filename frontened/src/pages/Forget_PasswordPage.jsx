@@ -77,7 +77,15 @@ const ForgetPasswordPage = () => {
                     <div className="absolute z-10 inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Mail className="h-5 w-5 text-base-content/40" />
                     </div>
-                    <input type="email" className={`input input-bordered w-full pl-10`} placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input 
+                    type="email" 
+                    className={`input input-bordered w-full pl-10`} 
+                    placeholder="you@example.com" 
+                    value={email} 
+                    onChange={(e) => 
+                        setEmail(e.target.value)
+                    } 
+                    />
                   </div>
                 </div>
 
@@ -93,7 +101,15 @@ const ForgetPasswordPage = () => {
                     <div className="absolute z-10 inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Lock className="h-5 w-5 text-base-content/40" />
                     </div>
-                    <input type={showPassword ? 'text' : 'password'} className={`input input-bordered w-full pl-10`} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input 
+                        type={showPassword ? 'text' : 'password'} 
+                        className={`input input-bordered w-full pl-10`} 
+                        placeholder="••••••••" 
+                        value={password} 
+                        onChange={(e) => 
+                            setPassword(e.target.value)
+                        } 
+                    />
                     <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? (<EyeOff className="h-5 w-5 text-base-content/40" />) : (<Eye className="h-5 w-5 text-base-content/40" />)}
                     </button>
