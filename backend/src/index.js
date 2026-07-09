@@ -4,6 +4,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import friendRoutes from "./routes/friends.route.js"
+import statusRoutes from "./routes/status.route.js"
 import dotenv from "dotenv";
 import { connectDB } from "./lib/db.js";
 import { app, server } from "./lib/socket.js";
@@ -27,6 +28,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/friends", friendRoutes);
+app.use("/api/status", statusRoutes);
 
 const startServer = async () => {
     await connectDB();

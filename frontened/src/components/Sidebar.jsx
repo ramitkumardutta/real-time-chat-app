@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { Users, Search, UserPlus, Check, Clock } from "lucide-react";
+import { Users, Search, UserPlus, Check, Clock, Sparkles } from "lucide-react";
+import StatusPanel from "./StatusPanel";
 import { useAuthStore } from "../store/UseAuthStore";
 import { useChatStore } from "../store/UseChatStore";
 
@@ -8,9 +9,10 @@ const Sidebar = () => {
     const {
         getUsers, users, selectedUser, setSelectedUser, isUsersLoading,
         searchUsers, searchResults, isSearching,
-        sendFriendRequest, acceptFriendRequest, declineFriendRequest,  // ← add this
+        sendFriendRequest, acceptFriendRequest, declineFriendRequest,
         getPendingRequests, pendingRequests,
         subscribeToFriendEvents, unsubscribeFromFriendEvents,
+        getFriendStatuses, getMyStatus, subscribeToStatusEvents, unsubscribeFromStatusEvents,
     } = useChatStore();
 
     const { onlineUsers } = useAuthStore();
@@ -21,8 +23,14 @@ const Sidebar = () => {
     useEffect(() => {
         getUsers();
         getPendingRequests();
+        getFriendStatuses();
+        getMyStatus();
         subscribeToFriendEvents();
-        return () => unsubscribeFromFriendEvents();
+        subscribeToStatusEvents();
+        return () => {
+            unsubscribeFromFriendEvents();
+            unsubscribeFromStatusEvents();
+        };
     }, []);
 
     const handleSearch = (e) => {
@@ -89,6 +97,17 @@ const Sidebar = () => {
                                 {pendingRequests.length}
                             </span>
                         )}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("statuses")}
+                        className={`flex-1 text-sm py-1 rounded-lg transition-colors ${
+                            activeTab === "statuses"
+                                ? "bg-primary text-primary-content"
+                                : "bg-base-200 hover:bg-base-300"
+                        }`}
+                    >
+                        <Sparkles className="inline size-3 mr-1" />
+                        Status
                     </button>
                 </div>
 
@@ -230,6 +249,9 @@ const Sidebar = () => {
                     </div>
                 </div>
             )}
+
+            {/* STATUS TAB */}
+            {activeTab === "statuses" && <StatusPanel />}
 
             {/* REQUESTS TAB */}
             {activeTab === "requests" && (

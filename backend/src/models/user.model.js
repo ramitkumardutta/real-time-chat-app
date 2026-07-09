@@ -31,6 +31,15 @@ const userSchema = new mongoose.Schema(
                 status: { type: String, enum: ["pending", "accepted"], default: "pending" },
             }
         ],
+        statusUpdates: [
+            {
+                text: { type: String, default: "" },
+                mediaUrl: { type: String, default: "" },
+                mediaType: { type: String, enum: ["image", "video", ""], default: "" },
+                createdAt: { type: Date, default: Date.now },
+                expiresAt: { type: Date, required: true },
+            }
+        ],
     },
     { timestamps: true }
 );

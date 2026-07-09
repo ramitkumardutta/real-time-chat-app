@@ -85,6 +85,64 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
+    friendStatuses: [],
+    myStatus: null,
+    isStatusLoading: false,
+
+    getFriendStatuses: async () => {
+        set({ isStatusLoading: true });
+        try {
+            const res = await axiosInstanace.get("/status/friends");
+            set({ friendStatuses: res.data });
+        } catch (error) {
+            console.log("Error fetching friend statuses", error);
+        } finally {
+            set({ isStatusLoading: false });
+        }
+    },
+
+    getMyStatus: async () => {
+        try {
+            const res = await axiosInstanace.get("/status/me");
+            set({ myStatus: res.data });
+        } catch (error) {
+            console.log("Error fetching my status", error);
+        }
+    },
+
+    createStatus: async (statusData) => {
+        set({ isStatusLoading: true });
+        try {
+            const res = await axiosInstanace.post("/status", statusData);
+            set({ myStatus: res.data });
+            await get().getFriendStatuses();
+            toast.success("Status posted successfully");
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Unable to post status");
+        } finally {
+            set({ isStatusLoading: false });
+        }
+    },
+
+    subscribeToStatusEvents: () => {
+        const socket = useAuthStore.getState().socket;
+        if (!socket) return;
+        socket.on("newStatus", (status) => {
+            set((state) => ({
+                friendStatuses: [
+                    status,
+                    ...state.friendStatuses.filter((item) => item.statusId !== status.statusId),
+                ],
+            }));
+        });
+    },
+
+    unsubscribeFromStatusEvents: () => {
+        const socket = useAuthStore.getState().socket;
+        if (!socket) return;
+        socket.off("newStatus");
+    },
+
     // Socket: someone accepted my request → add them to friends list live
     subscribeToFriendEvents: () => {
         const socket = useAuthStore.getState().socket;
