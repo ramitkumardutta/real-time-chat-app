@@ -3,12 +3,12 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
+import friendRoutes from "./routes/friends.route.js"
 import dotenv from "dotenv";
-import { connect } from "mongoose";
 import { connectDB } from "./lib/db.js";
 import { app, server } from "./lib/socket.js";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 
 
@@ -26,8 +26,13 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/friends", friendRoutes);
 
-server.listen(PORT, () => {
-    console.log(`server is running on port: ${PORT}`);
-    connectDB();
-})
+const startServer = async () => {
+    await connectDB();
+    server.listen(PORT, () => {
+        console.log(`server is running on port: ${PORT}`);
+    });
+};
+
+startServer();
