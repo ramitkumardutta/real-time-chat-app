@@ -107,6 +107,24 @@ npm install
 npm run dev
 ```
 
+### Deploy to Render as a Single Service
+
+Create a **Web Service** for the repository and leave **Root Directory** blank so
+Render checks out the whole repository. Set:
+
+- **Build Command:** `cd frontened && npm ci && npm run build && cd ../backend && npm ci`
+- **Start Command:** `cd backend && npm start`
+
+Add these environment variables in Render:
+
+- `NODE_ENV=production`
+- `MONGODB_URI`
+- `JWT_SECRET`
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` for media uploads
+
+Render supplies `PORT` automatically. The backend serves the built frontend from
+`frontened/dist` and handles `/api` requests from the same service.
+
 ---
 
 ## API Endpoints

@@ -10,13 +10,15 @@ import { connectDB } from "./lib/db.js";
 import { app, server } from "./lib/socket.js";
 
 import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config({ quiet: true });
 
 
 
 const PORT = process.env.PORT || 5001;
-const __dirname = path.resolve();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const frontendDistPath = path.resolve(__dirname, "../../frontened/dist");
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -34,10 +36,10 @@ app.use("/api/friends", friendRoutes);
 app.use("/api/status", statusRoutes);
 
 if(process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../frontened/dist")));
+    app.use(express.static(frontendDistPath));
 
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    app.get("/{*splat}", (req, res) => {
+        res.sendFile(path.join(frontendDistPath, "index.html"));
     })
 }
 
