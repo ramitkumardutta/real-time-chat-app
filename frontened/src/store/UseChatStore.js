@@ -20,9 +20,15 @@ export const useChatStore = create((set, get) => ({
         set({ isUsersLoading: true });
         try {
             const res = await axiosInstanace.get("/friends");
+            if (!Array.isArray(res.data)) {
+                console.error("Unexpected response while loading friends:", res.data);
+                toast.error("Unable to load friends: received an invalid server response.");
+                return;
+            }
             set({ users: res.data });
         } catch (error) {
-            toast.error(error.response.data.message);
+            console.error("Error fetching friends:", error);
+            toast.error(error.response?.data?.message || "Unable to load friends.");
         } finally {
             set({ isUsersLoading: false });
         }
